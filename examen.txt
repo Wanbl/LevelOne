@@ -1,0 +1,50 @@
+1.
+
+(a)
+L'inventaire du joueur est créé dans la classe PlayerInventory (Package items) qui fixe la taille de l'iventaire à 1 ligne et 5 colonnes dans le constructeur, il appelle le constructeur d'inventaire avec super(1,5) qui appelle le constructeur de la classe Inventory du même package
+La sélection des items est aussi modifiée, lorsque l'on arrive au 6ème item avec la molette on retourne au premier, dans la même classe PlayerInventory dans les méthodes previousSlot() et nextSlot()
+Les items sont ajoutés lors de la déclaration du joueur dans la classe SceneManager du package manager dans la méthode initPlayer()
+
+(b)
+Le fichier texte contenant les entités chargées sur le terrain a été mis à jour dans data/maps/entities/forest.txt a été mis à jour avec une case contenant LivingEntity:NPC:ENDNPC:ENDQUESTGIVER, et une autre contient LivingEntity:NPC:FIRSTNPC:APPLEQUESTGIVER.
+Les objets qu'ils contiennent ont été ajoutés dans le type énuméré NPCType du package entity lors des constructeurs des PNJs.
+Pour les items au sol, dans le même fichier sont ajoutés NonLivingEntity:ItemEntity:ITEM2:ITEM2:1 et NonLivingEntity:ItemEntity:ITEM1:ITEM1:1 qui ajoutent chacun un item ITEM1 ou ITEM2 dont la création est détaillée plus tard.
+Ces entités sont chargées dans le monde par la classe EntityLoader du package entity;
+
+
+2.
+Le nouveau PNJ est le PNJ INVENTORYCHECKQUESTGIVER créé dans le type énuméré NPCType, qui lui attribue des fichiers de dialogues contenus dans data/dialogues/inventorycheckquestgiver/, dans la classe EntityManager(), la méthode startQuest() vérifie maintenant si le type du pnj est NPCType.INVENTORYCHECKQUESTGIVER et dans ce cas choisis le bon dialogue et liste les items du joueur dans le chat textuel. (Il se situe tout à gauche)
+
+
+3.
+Item1:
+1)Création d'une nouvelle ArrayList metNPC comme attribut de EntityManager contenant les PNJ déjà rencontrés, ajout d'un NPC rencontré à chaque fois que l'on marche vers ce NPC, ajout dans la méthode startQuest() de EntityManager
+2)Création d'un nouveau sprite d'item: présent dans data/templates/items/item1.png
+3)Ajout du type d'item: Création dans le type énuméré ItemType de ITEM1
+4)Ajout du template dans le type énuméré ItemTemplate
+5)Ajout de l'effet dans useItem() de la classe EntityManager dans le cas où le type est ITEM1, on va rechercher dans la liste de NPC rencontrés et si le NPC recherché s'y trouve, affiche la liste des items du NPC dans le chat textuel
+6)Ajout de l'item dans les poches du joueur dans initPlayer() de la classe SceneManager
+
+Item2:
+1)Création d'un nouveau sprite d'item: présent dans data/templates/items/item2.png
+2)Ajout du type d'item: Création dans le type énuméré ItemType de ITEM2
+3)Ajout du template dans le type énuméré ItemTemplate
+4)Ajout de l'effet dans useItem() de la classe EntityManager dans le cas où le type est ITEM2.
+5)Création de la méthode handleItem2Usage(LivingEntity entity, Item item2) qui affiche des fenêtres de sélection des PNJs puis des items, et se ferme si le pnj sélectionné n'a pas d'items. L'objet est ensuite détruit avec la méthode useItem() de Inventory.
+6)Ajout de l'item dans l'inventaire du joueur dans initPlayer() de la classe SceneManager
+
+Item3: (Ne marche pas, pas eu le temps de placer d'autres lieux)
+1)Création d'un nouveau sprite d'item: présent dans data/templates/items/item3.png
+2)Ajout du type d'item: Création dans le type énuméré ItemType de ITEM3
+3)Ajout du template dans le type énuméré ItemTemplate
+4)Ajout de l'effet dans useItem() de la classe EntityManager dans le cas où le type est ITEM3.
+5)Ajout de l'item dans les poches du joueur dans initPlayer() de la classe SceneManager
+
+Item4:
+1)Création d'un nouveau sprite d'item: présent dans data/templates/items/item4.png
+2)Ajout du type d'item: Création dans le type énuméré ItemType de ITEM4
+3)Ajout du template dans le type énuméré ItemTemplate
+4)Ajout de l'effet dans useItem() de la classe EntityManager dans le cas où le type est ITEM4. Les points de vie du monstre sont donnés au joueur et le monstre est tué avec la nouvelle méthode killEntity() de EntityManager.
+5)Ajout de l'item dans les poches du joueur dans initPlayer() de la classe SceneManager
+
+Item5: Cet item existait déjà et est l'item WIN (en forme de coupe) de type WIN, son effet est dans la méthode useItem() de EntityManager, qui change simplement la scène de jeu.
