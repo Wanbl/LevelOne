@@ -13,6 +13,10 @@ public enum ItemTemplate {
     HELMET("Helmet", ItemType.ARMOR, 50, 100),
     FORESTKEY("ForestKey", ItemType.FORESTKEY, 1, 1),
     WIN("Win", ItemType.WIN, 1, 1),
+    ITEM3("Item3", ItemType.ITEM3, 1, 1),
+    ITEM4("Item4", ItemType.ITEM4, 1, 1),
+    ITEM1("Item1", ItemType.ITEM1, 1, 1),
+    ITEM2("Item2", ItemType.ITEM2, 1, 1),
     DEFAULT("Default", ItemType.DEFAULT, 1, 1);
 
     private String name;

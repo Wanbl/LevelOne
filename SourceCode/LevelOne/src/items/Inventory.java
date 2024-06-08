@@ -34,7 +34,7 @@ public class Inventory {
      * Constructs a default Inventory with 10 rows and 5 columns.
      */
     public Inventory() {
-        this(10, 5);
+        this(5, 1);
     }
 
     /**
@@ -371,5 +371,14 @@ public class Inventory {
         for (int i = 0; i < size; i++) {
             removeItem(i);
         }
+    }
+    
+    public boolean isEmpty() {
+		for (int i = 0; i < size; i++) {
+			if (getItem(i) != null) {
+				return false;
+			}
+		}
+		return true;
     }
 }

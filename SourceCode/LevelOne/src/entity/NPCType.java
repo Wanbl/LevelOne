@@ -11,7 +11,8 @@ import items.ItemTemplate;
  */
 public enum NPCType {
     APPLEQUESTGIVER("data/dialogues/applequestgiver/first.txt", "data/dialogues/applequestgiver/second.txt", ItemTemplate.APPLE, new ItemTemplate[]{ItemTemplate.SWORD, ItemTemplate.FORESTKEY}),
-    ENDQUESTGIVER("data/dialogues/endquestgiver/first.txt", "data/dialogues/endquestgiver/second.txt", ItemTemplate.KNIFE, new ItemTemplate[]{ItemTemplate.WIN});
+    ENDQUESTGIVER("data/dialogues/endquestgiver/first.txt", "data/dialogues/endquestgiver/second.txt", ItemTemplate.KNIFE, new ItemTemplate[]{ItemTemplate.WIN, ItemTemplate.APPLE}),
+    INVENTORYCHECKQUESTGIVER("data/dialogues/inventorycheckquestgiver/first.txt", "data/dialogues/inventorycheckquestgiver/second.txt", ItemTemplate.FORESTKEY, new ItemTemplate[]{ItemTemplate.APPLE, ItemTemplate.KNIFE});
 
     private String firstDialogue;
     private String secondDialogue;

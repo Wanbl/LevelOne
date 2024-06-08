@@ -12,5 +12,9 @@ public enum ItemType {
     MISC,       // Represents miscellaneous items
     DEFAULT,    // Represents default items
     FORESTKEY,  // Represents a key for forest areas
-    WIN;        // Represents the winning item
+    WIN,      // Represents the winning item
+	ITEM3,
+	ITEM4,
+	ITEM1,
+	ITEM2;
 }

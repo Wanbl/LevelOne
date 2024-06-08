@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import observer.Observer;
 import entity.Monster;
 import entity.NPC;
+import entity.NPCType;
 import entity.ItemEntity;
 import entity.Player;
 import items.PlayerInventory;
@@ -22,6 +23,11 @@ import map.MapType;
 import items.Item;
 import items.ItemTemplate;
 import chat.GlobalChat;
+import java.util.Random;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ChoiceDialog;
+import java.util.Optional;
+
 
 /**
  * The EntityManager class manages entities within a game map,
@@ -35,6 +41,8 @@ public class EntityManager {
     private List<Observer> observers = new ArrayList<>();
     private List<LivingEntity> movedEntities = new ArrayList<>();
     private SceneManager sceneManager;
+    private List<Entity> metNPC = new ArrayList<>();
+    private List<Point2D> lieux = new ArrayList<>();
 
     /**
      * Constructs an EntityManager with specified grid dimensions and a scene manager.
@@ -239,16 +247,34 @@ public class EntityManager {
         Entity entityAtNewLocation = getEntity(newLocation);
         if (entityAtNewLocation instanceof NPC) {
             NPC targetNPC = (NPC) entityAtNewLocation;
+			if (metNPC.contains(targetNPC)) {
+				GlobalChat.addMessage("You have already met this NPC");
+			}
+			else {
+				this.metNPC.add(targetNPC);
+			}
             if (entity instanceof Player) {
                 Player player = (Player) entity;
                 PlayerInventory playerInventory = (PlayerInventory) player.getInventory();
-                Item selectedItem = playerInventory.getSelectedItem();
-                if (selectedItem != null && selectedItem.getTemplate() == targetNPC.getNpcType().getSearchedItem()) {
-                    playerInventory.removeItem(selectedItem);
-                    targetNPC.setCurrentDialogue(targetNPC.getNpcType().getSecondDialogue());
-                    lootEntity(player, targetNPC);
+                if(targetNPC.getNpcType() == NPCType.INVENTORYCHECKQUESTGIVER) {
+					if (player.getInventory().isEmpty()) {
+						GlobalChat.addMessage(targetNPC.getNpcType().name() + " : " + targetNPC.getNpcType().getSecondDialogue());
+					} else {
+						GlobalChat.addMessage(targetNPC.getNpcType().name() + " : " + targetNPC.getNpcType().getFirstDialogue());
+						for (Item item : playerInventory.getItemList()) {
+							GlobalChat.addMessage(item.getName());
+						}
+					}
                 }
-                GlobalChat.addMessage(targetNPC.getNpcType().name() + " : " + targetNPC.getCurrentDialogue());
+                else {
+                	Item selectedItem = playerInventory.getSelectedItem();
+                    if (selectedItem != null && selectedItem.getTemplate() == targetNPC.getNpcType().getSearchedItem()) {
+                        playerInventory.removeItem(selectedItem);
+                        targetNPC.setCurrentDialogue(targetNPC.getNpcType().getSecondDialogue());
+                        lootEntity(player, targetNPC);
+                    }
+                    GlobalChat.addMessage(targetNPC.getNpcType().name() + " : " + targetNPC.getCurrentDialogue());
+                }
             }
         }
         notifyObservers();
@@ -308,6 +334,11 @@ public class EntityManager {
         }
         notifyObservers();
     }
+    
+	public void killEntity(LivingEntity entity) {
+		entityMap.remove(entity.getLocation());
+		notifyObservers();
+	}
 
     /**
      * Uses an item in a specified direction, performing actions based on the item's type.
@@ -315,7 +346,7 @@ public class EntityManager {
      * @param entity    The entity using the item.
      * @param direction The direction to use the item.
      */
-    public void useItem(LivingEntity entity, Direction direction) {
+	public void useItem(LivingEntity entity, Direction direction) {
         Point2D newLocation = getNewLocation(entity.getLocation(), direction);
         Entity entityAtNewLocation = getEntity(newLocation);
         Item selectedItem = null;
@@ -360,6 +391,53 @@ public class EntityManager {
                     sceneManager.changeScene(MapType.WIN);
                 }
                 break;
+            case ITEM1:
+                if (entityAtNewLocation instanceof NPC) {
+                    NPC targetNPC = (NPC) entityAtNewLocation;
+                    if (metNPC.contains(targetNPC)) {
+                        entity.getInventory().useItem(selectedItem);
+                        GlobalChat.addMessage("You have already met this NPC, here are the items in his inventory : ");
+                        for (Item item : targetNPC.getInventory().getItemList()) {
+                            GlobalChat.addMessage(item.getName());
+                        }
+
+                    }
+                }
+                break;
+            case ITEM2:
+            	entity.getInventory().useItem(selectedItem);
+                handleItem2Usage(entity, selectedItem);
+                break;
+            case ITEM3:
+                Direction randomdirection = Direction.UP;
+                Random random = new Random();
+                int randomDirection = random.nextInt(4);
+                switch (randomDirection) {
+                    case 0:
+                        randomdirection = Direction.UP;
+                        break;
+                    case 1:
+                        randomdirection = Direction.DOWN;
+                        break;
+                    case 2:
+                        randomdirection = Direction.LEFT;
+                        break;
+                    case 3:
+                        randomdirection = Direction.RIGHT;
+                        break;
+                    default:
+                        randomdirection = Direction.DOWN;
+                }
+                moveEntity(entity, randomdirection);
+                break;
+            case ITEM4:
+                if (entityAtNewLocation instanceof Monster) {
+                    Monster targetMonster = (Monster) entityAtNewLocation;
+                    entity.alterHealth(targetMonster.getHealth());
+                    killEntity(targetMonster);
+                    movedEntities.add(targetMonster);
+                }
+                break;
             default:
                 if (entityAtNewLocation instanceof LivingEntity) {
                     hitEntity(entity, direction);
@@ -373,6 +451,68 @@ public class EntityManager {
         }
 
         notifyObservers();
+    }
+
+    /**
+     * Handles the usage of ITEM2 by displaying dialogs to select an NPC and an item.
+     * 
+     * @param entity The entity using the item.
+     */
+    private boolean handleItem2Usage(LivingEntity entity, Item item2) {
+        if (metNPC.isEmpty()) {
+            GlobalChat.addMessage("No NPCs met yet.");
+            return true;
+        }
+
+        // Dialog to select NPC
+        List<String> npcChoices = new ArrayList<>();
+        for (int i = 0; i < metNPC.size(); i++) {
+            npcChoices.add(i + ": " + ((NPC) metNPC.get(i)).getNpcType().name());
+        }
+        ChoiceDialog<String> npcDialog = new ChoiceDialog<>(npcChoices.get(0), npcChoices);
+        npcDialog.setTitle("Select NPC");
+        npcDialog.setHeaderText("Choose an NPC");
+        npcDialog.setContentText("Select the NPC you want to interact with:");
+
+        Optional<String> npcResult = npcDialog.showAndWait();
+        if (npcResult.isPresent()) {
+            int npcIndex = Integer.parseInt(npcResult.get().split(":")[0]);
+            NPC selectedNPC = (NPC) metNPC.get(npcIndex);
+
+            // Dialog to select item
+            List<String> itemChoices = new ArrayList<>();
+            Item[] npcItems = selectedNPC.getInventory().getItemList();
+			if (npcItems.length == 0) {
+				GlobalChat.addMessage("NPC has no items.");
+				entity.getInventory().useItem(item2);
+				notifyObservers();
+				return false;
+			}
+            for (int i = 0; i < npcItems.length ; i++) {
+                if (npcItems[i] != null) {
+                    itemChoices.add(i + ": " + npcItems[i].getName());
+                }
+            }
+            ChoiceDialog<String> itemDialog = new ChoiceDialog<>(itemChoices.get(0), itemChoices);
+            itemDialog.setTitle("Select Item");
+            itemDialog.setHeaderText("Choose an item from the NPC's inventory");
+            itemDialog.setContentText("Select the item you want to transfer:");
+
+            Optional<String> itemResult = itemDialog.showAndWait();
+            if (itemResult.isPresent()) {
+                int itemIndex = Integer.parseInt(itemResult.get().split(":")[0]);
+                Item selectedItem = npcItems[itemIndex];
+
+                // Transfer item to player's inventory
+                if (entity instanceof Player) {
+                    Player player = (Player) entity;
+                    player.getInventory().addItem(selectedItem);
+                    selectedNPC.getInventory().removeItem(selectedItem);
+                    GlobalChat.addMessage("Item " + selectedItem.getName() + " transferred to your inventory.");
+                }
+            }
+        }
+        return true;
     }
 
     /**

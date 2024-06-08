@@ -61,10 +61,17 @@ public class SceneManager {
     private void initPlayer() {
         SpriteManager playerSpriteManager = new SpriteManager(EntitySprite.PLAYER);
         this.player = new Player(new Point2D(0, 0), "player", null, playerSpriteManager);
-        player.getInventory().addItem(ItemTemplate.SWORD, true);
-        for (int i = 0; i < 2; i++) {
-            player.getInventory().addItem(ItemTemplate.APPLE);
-        }
+//        player.getInventory().addItem(ItemTemplate.SWORD, true);
+//        for (int i = 0; i < 1; i++) {
+//            player.getInventory().addItem(ItemTemplate.APPLE);
+//        }
+//        player.getInventory().addItem(ItemTemplate.KNIFE);
+//        player.getInventory().addItem(ItemTemplate.FORESTKEY);
+        player.getInventory().addItem(ItemTemplate.WIN);
+        player.getInventory().addItem(ItemTemplate.ITEM3);
+        player.getInventory().addItem(ItemTemplate.ITEM4);
+        player.getInventory().addItem(ItemTemplate.ITEM1);
+        player.getInventory().addItem(ItemTemplate.ITEM2);
     }
 
     /**

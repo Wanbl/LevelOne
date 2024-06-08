@@ -15,7 +15,7 @@ public class PlayerInventory extends Inventory {
      * Constructs a PlayerInventory with default rows and columns.
      */
     public PlayerInventory() {
-        super(5, 10);
+        super(1, 5);
         this.hotBar = this.getItems()[0];
         this.selectedSlot = 0;
         this.selectedItem = this.hotBar[this.selectedSlot];
@@ -69,7 +69,7 @@ public class PlayerInventory extends Inventory {
      * Selects the next slot in the hotbar.
      */
     public void nextSlot() {
-        if (this.selectedSlot < 9) {
+        if (this.selectedSlot < 4) {
             this.selectedSlot++;
         } else {
             this.selectedSlot = 0;
@@ -86,7 +86,7 @@ public class PlayerInventory extends Inventory {
         if (this.selectedSlot > 0) {
             this.selectedSlot--;
         } else {
-            this.selectedSlot = 9;
+            this.selectedSlot = 4;
         }
         this.selectedItem = this.hotBar[this.selectedSlot];
         printInventoryState();

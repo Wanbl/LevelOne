@@ -16,6 +16,10 @@ public enum EntitySprite {
     
     // Items
     APPLE("data/templates/items/apple.png", "data/templates/items/apple.png", "data/templates/items/apple.png", "data/templates/items/apple.png"),
+    KNIFE("data/templates/items/knife.png", "data/templates/items/knife.png", "data/templates/items/knife.png", "data/templates/items/knife.png"),
+    ITEM1("data/templates/items/item1.png", "data/templates/items/item1.png", "data/templates/items/item1.png", "data/templates/items/item1.png"),
+    ITEM2("data/templates/items/item2.png", "data/templates/items/item2.png", "data/templates/items/item2.png", "data/templates/items/item2.png"),
+    FORESTKEY("data/templates/items/forestkey.png", "data/templates/items/forestkey.png", "data/templates/items/forestkey.png", "data/templates/items/forestkey.png"),
     
     // Decor
     TREE("data/templates/decor/tree.png", "data/templates/decor/tree.png", "data/templates/decor/tree.png", "data/templates/decor/tree.png"),
