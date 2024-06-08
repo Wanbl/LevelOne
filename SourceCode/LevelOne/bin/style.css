@@ -1,0 +1,22 @@
+/* General style for the custom progress bars, which adjusts the size and position. */
+.custom-progress-bar {
+    -fx-pref-width: 40px;    /* Set the preferred width of the progress bar */
+    -fx-pref-height: 10px;   /* Set the preferred height of the progress bar */
+    -fx-translate-y: 25px;   /* Move the progress bar down by 25 pixels */
+    -fx-translate-x: 3px;    /* Move the progress bar right by 3 pixels */
+}
+
+/* Style for the health bar of monsters, setting the color to red. */
+.monster-health-bar {
+    -fx-accent: red;         /* Set the color of the progress bar to red */
+}
+
+/* Style for the health bar of the player, setting the color to green. */
+.player-health-bar {
+    -fx-accent: green;       /* Set the color of the progress bar to green */
+}
+
+/* Style for the health bar of NPCs, setting the color to blue. */
+.npc-health-bar {
+    -fx-accent: blue;        /* Set the color of the progress bar to blue */
+}
